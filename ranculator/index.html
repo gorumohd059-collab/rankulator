@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Rankulator | Smart Calculators + FD Tool</title>
+  <meta name="description" content="21 powerful calculators: EMI, SIP, FD, BMI, GST, percentage, age, password & more. Fast, free, ad-supported.">
+  <meta name="keywords" content="FD calculator, fixed deposit, EMI, SIP, BMI, GST, financial tools">
+  <meta name="author" content="Rankulator">
+  <link rel="canonical" href="https://rankulator-calculator.netlify.app">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { font-family: 'Inter', sans-serif; }
+    body { transition: background 0.2s; }
+    .glass-card { background: rgba(255,255,255,0.85); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.4); }
+    .dark .glass-card { background: rgba(10, 20, 35, 0.85); border: 1px solid rgba(255,255,255,0.08); }
+    .calculator-card { transition: transform 0.15s ease, box-shadow 0.2s; cursor: pointer; }
+    .calculator-card:active { transform: scale(0.98); }
+    .modal-backdrop { backdrop-filter: blur(12px); background: rgba(0,0,0,0.5); }
+    .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; }
+    @media (max-width: 640px) { .card-grid { gap: 0.75rem; } }
+    input, select { background: rgba(255,255,255,0.9); transition: all 0.15s; }
+    .dark input, .dark select { background: rgba(15,25,45,0.9); color: #e2e8f0; }
+    input:focus, select:focus { outline: none; box-shadow: 0 0 0 3px rgba(99,102,241,0.4); border-color: #6366f1; }
+    .result-number { font-size: 1.5rem; font-weight: 800; background: linear-gradient(135deg, #4f46e5, #c084fc); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .ad-container { display: flex; justify-content: center; align-items: center; margin: 6px 0; min-height: 70px; overflow: hidden; background: transparent; }
+    iframe { max-width: 100%; border: none; }
+    .sticky-ad-top { position: sticky; top: 0; z-index: 30; background: rgba(255,255,255,0.96); backdrop-filter: blur(4px); border-bottom: 1px solid #e2e8f0; }
+    .dark .sticky-ad-top { background: rgba(15,25,45,0.96); border-bottom-color: #334155; }
+    .mobile-bottom-ad { position: fixed; bottom: 0; left: 0; right: 0; z-index: 45; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); display: flex; justify-content: center; padding: 4px 0; }
+    @media (min-width: 768px) { .mobile-bottom-ad { display: none; } }
+    body { padding-bottom: 0; }
+    .lg\:pb-0 { padding-bottom: 0; }
+  </style>
+</head>
+<body class="bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 lg:pb-0">
+
+  <!-- Hero Section -->
+  <header class="relative overflow-hidden bg-gradient-to-r from-indigo-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 py-6 md:py-10">
+    <div class="container mx-auto px-4 text-center">
+      <div class="inline-block px-3 py-1 rounded-full bg-white/70 dark:bg-gray-800/70 backdrop-blur text-xs font-semibold text-indigo-600 mb-1">⚡ 21 essential tools</div>
+      <h1 class="text-4xl md:text-5xl font-black bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">Rankulator</h1>
+      <p class="text-sm text-gray-600 dark:text-gray-300 mt-1">FD, EMI, SIP, BMI, GST & more — instant & free</p>
+      <div class="mt-3 max-w-xs mx-auto">
+        <div class="relative">
+          <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+          <input type="text" id="globalSearch" placeholder="Search calculators..." class="w-full pl-9 pr-3 py-2 rounded-full border border-gray-200 dark:border-gray-700 bg-white/80 dark:bg-gray-800/80 text-sm">
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- STICKY TOP AD (728x90 or responsive fallback) -->
+  <div class="sticky-ad-top py-1">
+    <div class="ad-container">
+      <script>
+        atOptions = { 'key' : 'f4dc047847f2a23fd28ee8e0c1595d75', 'format' : 'iframe', 'height' : 90, 'width' : 728, 'params' : {} };
+      </script>
+      <script src="https://www.highperformanceformat.com/f4dc047847f2a23fd28ee8e0c1595d75/invoke.js"></script>
+    </div>
+  </div>
+
+  <!-- Main content -->
+  <div class="container mx-auto px-4 py-4">
+    <!-- inline ad 300x250 (first) -->
+    <div class="ad-container my-2">
+      <script>
+        atOptions = { 'key' : 'bc8a7fc195cd05571ab4c9db7e337668', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {} };
+      </script>
+      <script src="https://www.highperformanceformat.com/bc8a7fc195cd05571ab4c9db7e337668/invoke.js"></script>
+    </div>
+
+    <div id="calculatorGrid" class="card-grid mt-2"></div>
+    <div id="noResults" class="hidden text-center py-10 text-gray-500">✨ No calculators found.</div>
+
+    <!-- second inline 300x250 (after grid) -->
+    <div class="ad-container my-4">
+      <script>
+        atOptions = { 'key' : 'bc8a7fc195cd05571ab4c9db7e337668', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {} };
+      </script>
+      <script src="https://www.highperformanceformat.com/bc8a7fc195cd05571ab4c9db7e337668/invoke.js"></script>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div id="calcModal" class="fixed inset-0 z-50 hidden items-center justify-center p-3 modal-backdrop" onclick="if(event.target===this) closeModal()">
+    <div class="bg-white dark:bg-gray-900 rounded-2xl max-w-lg w-full max-h-[85vh] overflow-y-auto shadow-xl">
+      <div class="sticky top-0 bg-white dark:bg-gray-900 p-3 border-b flex justify-between items-center">
+        <h2 id="modalTitle" class="text-lg font-bold truncate"></h2>
+        <button onclick="closeModal()" class="text-xl p-1 rounded-full hover:bg-gray-100"><i class="fas fa-times"></i></button>
+      </div>
+      <div id="modalBody" class="p-4"></div>
+      <div class="p-2 border-t text-center text-[10px] text-gray-400">ad</div>
+    </div>
+  </div>
+
+  <!-- STICKY BOTTOM AD (320x50) for mobile only -->
+  <div class="mobile-bottom-ad">
+    <script>
+      atOptions = { 'key' : '783f6bdc11dc2b43d67a377675fcb39a', 'format' : 'iframe', 'height' : 50, 'width' : 320, 'params' : {} };
+    </script>
+    <script src="https://www.highperformanceformat.com/783f6bdc11dc2b43d67a377675fcb39a/invoke.js"></script>
+  </div>
+  <!-- spacer for mobile -->
+  <div class="h-14 lg:hidden"></div>
+
+  <footer class="bg-gray-100 dark:bg-gray-900 py-3 text-center text-gray-500 text-xs">
+    <p>Rankulator — 21 free calculators. Ads keep it free.</p>
+  </footer>
+
+  <script>
+    // -------------------- 21 FULLY WORKING CALCULATORS (FD ADDED) --------------------
+    const CALCULATORS = [
+      { id: 1, name: "EMI Calculator", desc: "Monthly loan payment", cat: "Financial", icon: "fas fa-hand-holding-usd", type: "emi" },
+      { id: 2, name: "SIP Calculator", desc: "Mutual fund returns", cat: "Financial", icon: "fas fa-chart-line", type: "sip" },
+      { id: 3, name: "GST Calculator", desc: "Tax inclusive/exclusive", cat: "Financial", icon: "fas fa-file-invoice-dollar", type: "gst" },
+      { id: 4, name: "FD Calculator", desc: "Fixed deposit maturity", cat: "Financial", icon: "fas fa-piggy-bank", type: "fd" },
+      { id: 5, name: "Loan Calculator", desc: "Total interest + payment", cat: "Financial", icon: "fas fa-building-columns", type: "loan" },
+      { id: 6, name: "BMI Calculator", desc: "Body mass index", cat: "Health", icon: "fas fa-weight-scale", type: "bmi" },
+      { id: 7, name: "Calorie (BMR)", desc: "Daily calorie needs", cat: "Health", icon: "fas fa-fire", type: "calorie" },
+      { id: 8, name: "Body Fat %", desc: "Estimate body fat", cat: "Health", icon: "fas fa-person", type: "bodyfat" },
+      { id: 9, name: "Water Intake", desc: "Daily hydration", cat: "Health", icon: "fas fa-droplet", type: "water" },
+      { id: 10, name: "Percentage", desc: "Find % of number", cat: "Math", icon: "fas fa-percent", type: "percentage" },
+      { id: 11, name: "Factorial n!", desc: "Calculate factorial", cat: "Math", icon: "fas fa-exclamation", type: "factorial" },
+      { id: 12, name: "Prime Checker", desc: "Is it prime?", cat: "Math", icon: "fas fa-shield", type: "prime" },
+      { id: 13, name: "Scientific", desc: "sin/cos/log/√", cat: "Math", icon: "fas fa-square-root-variable", type: "scientific" },
+      { id: 14, name: "Age Calculator", desc: "Exact age in years", cat: "Life", icon: "fas fa-cake-candles", type: "age" },
+      { id: 15, name: "Love %", desc: "Fun compatibility", cat: "Life", icon: "fas fa-heart", type: "love" },
+      { id: 16, name: "Password Gen", desc: "Secure password", cat: "Tech", icon: "fas fa-key", type: "password" },
+      { id: 17, name: "Color Converter", desc: "HEX ↔ RGB", cat: "Tech", icon: "fas fa-palette", type: "color" },
+      { id: 18, name: "Binary Converter", desc: "Decimal to binary", cat: "Tech", icon: "fas fa-microchip", type: "binary" },
+      { id: 19, name: "Ohm's Law", desc: "Voltage/Current/Resistance", cat: "Science", icon: "fas fa-bolt", type: "ohm" },
+      { id: 20, name: "Force (F=ma)", desc: "Newton's law", cat: "Science", icon: "fas fa-weight-hanging", type: "force" },
+      { id: 21, name: "Kinetic Energy", desc: "½mv²", cat: "Science", icon: "fas fa-solar-panel", type: "energy" }
+    ];
+
+    let favorites = JSON.parse(localStorage.getItem("rank_favs") || "[]");
+    let darkMode = localStorage.getItem("darkMode") === "true";
+    let activeCategory = "All";
+    let searchTerm = "";
+
+    function saveFavs() { localStorage.setItem("rank_favs", JSON.stringify(favorites)); }
+    function isFavorite(id) { return favorites.includes(id); }
+    function toggleFavorite(id, event) { 
+      event.stopPropagation();
+      if(favorites.includes(id)) favorites = favorites.filter(f=>f!==id);
+      else favorites.push(id);
+      saveFavs(); renderGrid();
+    }
+
+    // --- FD CALCULATOR LOGIC (NEW) ---
+    window.computeFD = function() {
+      let principal = parseFloat(document.getElementById("fd_principal")?.value);
+      let rate = parseFloat(document.getElementById("fd_rate")?.value);
+      let years = parseFloat(document.getElementById("fd_years")?.value);
+      if(isNaN(principal) || isNaN(rate) || isNaN(years)) return;
+      let amount = principal * Math.pow(1 + rate/100, years);
+      let interest = amount - principal;
+      document.getElementById("fd_res").innerHTML = `<div class="result-number">₹${Math.round(amount).toLocaleString()}</div><p class="text-xs mt-1">Interest: ₹${Math.round(interest).toLocaleString()}</p>`;
+    };
+
+    // existing calculators (all kept and working)
+    window.computeEMI = () => { let p=+document.getElementById("emi_p")?.value, r=+document.getElementById("emi_r")?.value/100/12, n=+document.getElementById("emi_n")?.value; if(isNaN(p)||isNaN(r)||isNaN(n)||n<=0) return; let emi = p * r * Math.pow(1+r,n) / (Math.pow(1+r,n)-1); let total = emi * n; document.getElementById("emi_res").innerHTML = `<div class="result-number">₹${Math.round(emi).toLocaleString()}</div><p class="text-xs mt-1">Total: ₹${Math.round(total).toLocaleString()} | Interest: ₹${Math.round(total-p).toLocaleString()}</p>`; };
+    window.computeSIP = () => { let P=+document.getElementById("sip_p")?.value, r=+document.getElementById("sip_r")?.value/100/12, n=+document.getElementById("sip_n")?.value*12; if(isNaN(P)||isNaN(r)||isNaN(n)) return; let FV = P*((Math.pow(1+r,n)-1)/r)*(1+r); document.getElementById("sip_res").innerHTML = `<div class="result-number">₹${Math.round(FV).toLocaleString()}</div><p class="text-xs">Invested: ₹${(P*n).toLocaleString()}</p>`; };
+    window.computeGST = () => { let amt=+document.getElementById("gst_amt")?.value, rate=+document.getElementById("gst_rate")?.value; let gst=amt*rate/100; document.getElementById("gst_res").innerHTML = `<div class="result-number">₹${gst.toFixed(2)}</div><p>Total: ₹${(amt+gst).toFixed(2)}</p>`; };
+    window.computeLoan = () => { let p=+document.getElementById("loan_p")?.value, r=+document.getElementById("loan_r")?.value/100/12, n=+document.getElementById("loan_n")?.value; if(isNaN(p)||isNaN(r)||isNaN(n)) return; let emi = p * r * Math.pow(1+r,n) / (Math.pow(1+r,n)-1); document.getElementById("loan_res").innerHTML = `<div class="result-number">₹${Math.round(emi).toLocaleString()}/mo</div><p class="text-xs">Total: ₹${Math.round(emi*n).toLocaleString()}</p>`; };
+    window.computeBMI = () => { let w=+document.getElementById("bmi_w")?.value, h=+document.getElementById("bmi_h")?.value; if(!w||!h) return; let bmi = w/(h*h); let cat = bmi<18.5?"Underweight":bmi<25?"Normal":bmi<30?"Overweight":"Obese"; document.getElementById("bmi_res").innerHTML = `<div class="result-number">${bmi.toFixed(1)}</div><p class="text-sm">${cat}</p>`; };
+    window.computeCalorie = () => { let w=+document.getElementById("cal_w")?.value, h=+document.getElementById("cal_h")?.value, a=+document.getElementById("cal_a")?.value; if(isNaN(w)||isNaN(h)||isNaN(a)) return; let bmr = 10*w + 6.25*h - 5*a + 5; document.getElementById("cal_res").innerHTML = `<div class="result-number">${Math.round(bmr)} kcal/day</div>`; };
+    window.computeBodyFat = () => { let g=document.getElementById("bf_g")?.value, waist=+document.getElementById("bf_w")?.value, neck=+document.getElementById("bf_n")?.value, hip=+document.getElementById("bf_h")?.value; let bf = g==="male" ? 86.01*Math.log10(waist-neck) - 70.041*Math.log10(170) + 36.76 : 163.205*Math.log10(waist+hip-neck) - 97.684*Math.log10(170) - 78.387; document.getElementById("bf_res").innerHTML = `<div class="result-number">${Math.max(5, Math.min(50, bf)).toFixed(1)}%</div>`; };
+    window.computeWater = () => { let w=+document.getElementById("water_w")?.value; if(!w) return; document.getElementById("water_res").innerHTML = `<div class="result-number">${(w*0.033).toFixed(1)} liters</div>`; };
+    window.computePercentage = () => { let val=+document.getElementById("pct_val")?.value, pct=+document.getElementById("pct_rate")?.value; document.getElementById("pct_res").innerHTML = `<div class="result-number">${(val*pct/100).toFixed(2)}</div>`; };
+    window.computeFactorial = () => { let n=+document.getElementById("fact_n")?.value; let f=1; for(let i=2;i<=n;i++) f*=i; document.getElementById("fact_res").innerHTML = `<div class="result-number">${f.toLocaleString()}</div>`; };
+    window.checkPrime = () => { let n=+document.getElementById("prime_n")?.value; let prime=true; if(n<2) prime=false; for(let i=2;i<=Math.sqrt(n);i++) if(n%i===0){prime=false;break;} document.getElementById("prime_res").innerHTML = `<div class="result-number">${n} is ${prime?"Prime ✅":"Not Prime ❌"}</div>`; };
+    window.computeScientific = () => { let val=+document.getElementById("sci_val")?.value, op=document.getElementById("sci_op")?.value; let res; if(op==="sin") res=Math.sin(val); else if(op==="cos") res=Math.cos(val); else if(op==="log") res=Math.log10(val); else res=Math.sqrt(val); document.getElementById("sci_res").innerHTML = `<div class="result-number">${res.toFixed(4)}</div>`; };
+    window.calculateAge = () => { let dob=new Date(document.getElementById("age_dob")?.value); let today=new Date(); let age=today.getFullYear()-dob.getFullYear(); let m=today.getMonth()-dob.getMonth(); if(m<0||(m===0&&today.getDate()<dob.getDate())) age--; document.getElementById("age_res").innerHTML = `<div class="result-number">${age} years</div>`; };
+    window.loveCalc = () => { let n1=document.getElementById("love1")?.value, n2=document.getElementById("love2")?.value; let score = (n1.length + n2.length) * 7 % 101; document.getElementById("love_res").innerHTML = `<div class="result-number">${score}% ❤️</div><p class="text-xs">${score>70?"Perfect!":score>40?"Good chemistry":"Try again"}</p>`; };
+    window.generatePassword = () => { let chars="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*"; let pass=""; for(let i=0;i<12;i++) pass+=chars[Math.floor(Math.random()*chars.length)]; document.getElementById("pass_res").innerHTML = `<div class="font-mono bg-gray-100 dark:bg-gray-800 p-2 rounded text-center break-all">${pass}</div><button onclick="navigator.clipboard.writeText('${pass}')" class="mt-2 text-indigo-600 text-sm"><i class="fas fa-copy"></i> Copy</button>`; };
+    window.convertColor = () => { let hex=document.getElementById("color_hex")?.value; let r=parseInt(hex.slice(1,3),16), g=parseInt(hex.slice(3,5),16), b=parseInt(hex.slice(5,7),16); document.getElementById("color_res").innerHTML = `<div>RGB(${r},${g},${b})</div><div style="background:${hex}; height:32px; border-radius:8px; margin-top:5px;"></div>`; };
+    window.convertBinary = () => { let dec=+document.getElementById("bin_dec")?.value; document.getElementById("bin_res").innerHTML = `<div class="result-number">${dec.toString(2)}</div>`; };
+    window.computeOhm = () => { let v=+document.getElementById("ohm_v")?.value, i=+document.getElementById("ohm_i")?.value, r=+document.getElementById("ohm_r")?.value; if(v&&i) r=v/i; else if(v&&r) i=v/r; else if(i&&r) v=i*r; document.getElementById("ohm_res").innerHTML = `<div class="text-center text-sm">V:${v||'?'}V | I:${i||'?'}A | R:${r||'?'}Ω</div>`; };
+    window.computeForce = () => { let m=+document.getElementById("force_m")?.value, a=+document.getElementById("force_a")?.value; document.getElementById("force_res").innerHTML = `<div class="result-number">${(m*a).toFixed(2)} N</div>`; };
+    window.computeEnergy = () => { let m=+document.getElementById("energy_m")?.value, v=+document.getElementById("energy_v")?.value; document.getElementById("energy_res").innerHTML = `<div class="result-number">${(0.5*m*v*v).toFixed(2)} J</div>`; };
+
+    function renderCalculatorUI(type, container) {
+      const templates = {
+        emi: `<div class="space-y-3"><input id="emi_p" type="number" placeholder="Loan Amount (₹)" class="w-full p-2 border rounded-xl"><input id="emi_r" placeholder="Interest % p.a." class="w-full p-2 border rounded-xl"><input id="emi_n" placeholder="Months" class="w-full p-2 border rounded-xl"><button onclick="computeEMI()" class="w-full bg-indigo-600 text-white p-2 rounded-xl font-semibold">Calculate EMI</button><div id="emi_res" class="p-3 bg-gray-100 dark:bg-gray-800 rounded-xl text-center mt-2"></div></div>`,
+        sip: `<div class="space-y-3"><input id="sip_p" placeholder="Monthly (₹)" class="w-full p-2 border rounded-xl"><input id="sip_r" placeholder="Return % p.a." class="w-full p-2 border rounded-xl"><input id="sip_n" placeholder="Years" class="w-full p-2 border rounded-xl"><button onclick="computeSIP()" class="w-full bg-indigo-600 text-white p-2 rounded-xl">Calculate SIP</button><div id="sip_res" class="p-3 bg-gray-100 dark:bg-gray-800 rounded-xl mt-2"></div></div>`,
+        gst: `<div class="space-y-3"><input id="gst_amt" placeholder="Amount" class="w-full p-2 border rounded-xl"><input id="gst_rate" placeholder="GST %" class="w-full p-2 border rounded-xl"><button onclick="computeGST()" class="w-full bg-indigo-600 text-white p-2 rounded-xl">Calculate GST</button><div id="gst_res" class="p-3 bg-gray-100 dark:bg-gray-800 rounded-xl mt-2"></div></div>`,
+        fd: `<div class="space-y-3"><input id="fd_principal" type="number" placeholder="Principal Amount (₹)" class="w-full p-2 border rounded-xl"><input id="fd_rate" placeholder="Interest Rate (% p.a.)" class="w-full p-2 border rounded-xl"><input id="fd_years" placeholder="Time (Years)" class="w-full p-2 border rounded-xl"><button onclick="computeFD()" class="w-full bg-indigo-600 text-white p-2 rounded-xl">Calculate FD Maturity</button><div id="fd_res" class="p-3 bg-gray-100 dark:bg-gray-800 rounded-xl text-center mt-2"></div></div>`,
+        loan: `<div class="space-y-3"><input id="loan_p" placeholder="Loan Amount" class="w-full p-2 border rounded-xl"><input id="loan_r" placeholder="Interest % p.a." class="w-full p-2 border rounded-xl"><input id="loan_n" placeholder="Months" class="w-full p-2 border rounded-xl"><button onclick="computeLoan()" class="w-full bg-indigo-600 text-white p-2 rounded-xl">Calculate</button><div id="loan_res" class="p-3 bg-gray-100 dark:bg-gray-800 rounded-xl mt-2"></div></div>`,
+        bmi: `<div class="space-y-3"><input id="bmi_w" placeholder="Weight (kg)" class="w-full p-2 border rounded-xl"><input id="bmi_h" placeholder="Height (m)" step="0.01" class="w-full p-2 border rounded-xl"><button onclick="computeBMI()" class="w-full bg-indigo-600 text-white p-2 rounded-xl">BMI</button><div id="bmi_res" class="p-3 bg-gray-100 dark:bg-gray-800 rounded-xl mt-2"></div></div>`,
+        calorie: `<div class="space-y-3"><input id="cal_w" placeholder="Weight (kg)" class="w-full p-2 border"><input id="cal_h" placeholder="Height (cm)" class="w-full p-2 border"><input id="cal_a" placeholder="Age" class="w-full p-2 border"><button onclick="computeCalorie()" class="w-full bg-indigo-600 text-white p-2 rounded-xl">BMR</button><div id="cal_res" class="p-3 bg-gray-100 dark:bg-gray-800 rounded-xl mt-2"></div></div>`,
+        bodyfat: `<div class="space-y-3"><select id="bf_g" class="w-full p-2 border rounded-xl"><option>male</option><option>female</option></select><input id="bf_w" placeholder="Waist (cm)" class="w-full p-2 border"><input id="bf_n" placeholder="Neck (cm)" class="w-full p-2 border"><input id="bf_h" placeholder="Hip (cm, female)" class="w-full p-2 border"><button onclick="computeBodyFat()" class="w-full bg-indigo-600 text-white p-2 rounded-xl">Body Fat</button><div id="bf_res" class="p-3 bg-gray-100 dark:bg-gray-800 rounded-xl mt-2"></div></div>`,
+        water: `<div class="space-y-3"><input id="water_w" placeholder="Weight (kg)" class="w-full p-2 border rounded-xl"><button onclick="computeWater()" class="w-full bg-indigo-600 text-white p-2 rounded-xl">Water</button><div id="water_res" class="p-3 bg-gray-100 dark:bg-gray-800 rounded-xl mt-2"></div></div>`,
+        percentage: `<div class="space-y-3"><input id="pct_val" placeholder="Number" class="w-full p-2 border"><input id="pct_rate" placeholder="Percentage %" class="w-full p-2 border"><button onclick="computePercentage()" class="w-full bg-indigo-600 text-white p-2 rounded-xl">%</button><div id="pct_res" class="p-3 bg-gray-100 dark:bg-gray-800 rounded-xl mt-2"></div></div>`,
+        factorial: `<div class="space-y-3"><input id="fact_n" type="number" placeholder="n" class="w-full p-2 border rounded-xl"><button onclick="computeFactorial()" class="w-full bg-indigo-600 text-white p-2 rounded-xl">n!</button><div id="fact_res" class="p-3 bg-gray-100 dark:bg-gray-800 rounded-xl mt-2"></div></div>`,
+        prime: `<div class="space-y-3"><input id="prime_n" type="number" placeholder="Number" class="w-full p-2 border rounded-xl"><button onclick="checkPrime()" class="w-full bg-indigo-600 text-white p-2 rounded-xl">Check</button><div id="prime_res" class="p-3 bg-gray-100 dark:bg-gray-800 rounded-xl mt-2"></div></div>`,
+        scientific: `<div class="space-y-3"><input id="sci_val" type="number" placeholder="Value" class="w-full p-2 border rounded-xl"><select id="sci_op" class="w-full p-2 border rounded-xl"><option value="sin">sin</option><option value="cos">cos</option><option value="log">log10</option><option value="sqrt">√</option></select><button onclick="computeScientific()" class="w-full bg-indigo-600 text-white p-2 rounded-xl">Compute</button><div id="sci_res" class="p-3 bg-gray-100 dark:bg-gray-800 rounded-xl mt-2"></div></div>`,
+        age: `<div class="space-y-3"><input type="date" id="age_dob" class="w-full p-2 border rounded-xl"><button onclick="calculateAge()" class="w-full bg-indigo-600 text-white p-2 rounded-xl">Age</button><div id="age_res" class="p-3 bg-gray-100 dark:bg-gray-800 rounded-xl mt-2"></div></div>`,
+        love: `<div class="space-y-3"><input id="love1" placeholder="Your name" class="w-full p-2 border rounded-xl"><input id="love2" placeholder="Partner's name" class="w-full p-2 border rounded-xl"><button onclick="loveCalc()" class="w-full bg-indigo-600 text-white p-2 rounded-xl">❤️ Love %</button><div id="love_res" class="p-3 bg-gray-100 dark:bg-gray-800 rounded-xl mt-2"></div></div>`,
+        password: `<div class="space-y-3"><button onclick="generatePassword()" class="w-full bg-indigo-600 text-white p-2 rounded-xl">Generate 12‑char password</button><div id="pass_res" class="p-3 bg-gray-100 dark:bg-gray-800 rounded-xl mt-2"></div></div>`,
+        color: `<div class="space-y-3"><input type="color" id="color_hex" value="#6366f1" class="w-full h-10 rounded-xl"><button onclick="convertColor()" class="w-full bg-indigo-600 text-white p-2 rounded-xl">Convert HEX → RGB</button><div id="color_res" class="p-3 bg-gray-100 dark:bg-gray-800 rounded-xl mt-2 text-center"></div></div>`,
+        binary: `<div class="space-y-3"><input id="bin_dec" type="number" placeholder="Decimal" class="w-full p-2 border rounded-xl"><button onclick="convertBinary()" class="w-full bg-indigo-600 text-white p-2 rounded-xl">To Binary</button><div id="bin_res" class="p-3 bg-gray-100 dark:bg-gray-800 rounded-xl mt-2"></div></div>`,
+        ohm: `<div class="space-y-3"><input id="ohm_v" placeholder="Voltage (V)" class="w-full p-2 border"><input id="ohm_i" placeholder="Current (A)" class="w-full p-2 border"><input id="ohm_r" placeholder="Resistance (Ω)" class="w-full p-2 border"><button onclick="computeOhm()" class="w-full bg-indigo-600 text-white p-2 rounded-xl">Solve Ohm</button><div id="ohm_res" class="p-3 bg-gray-100 dark:bg-gray-800 rounded-xl mt-2"></div></div>`,
+        force: `<div class="space-y-3"><input id="force_m" placeholder="Mass (kg)" class="w-full p-2 border"><input id="force_a" placeholder="Acceleration (m/s²)" class="w-full p-2 border"><button onclick="computeForce()" class="w-full bg-indigo-600 text-white p-2 rounded-xl">Force (N)</button><div id="force_res" class="p-3 bg-gray-100 dark:bg-gray-800 rounded-xl mt-2"></div></div>`,
+        energy: `<div class="space-y-3"><input id="energy_m" placeholder="Mass (kg)" class="w-full p-2 border"><input id="energy_v" placeholder="Velocity (m/s)" class="w-full p-2 border"><button onclick="computeEnergy()" class="w-full bg-indigo-600 text-white p-2 rounded-xl">Kinetic Energy</button><div id="energy_res" class="p-3 bg-gray-100 dark:bg-gray-800 rounded-xl mt-2"></div></div>`
+      };
+      container.innerHTML = templates[type] || `<div class="p-4 text-center">Ready</div>`;
+    }
+
+    function openCalculator(calc) {
+      document.getElementById("modalTitle").innerText = calc.name;
+      const body = document.getElementById("modalBody");
+      body.innerHTML = `<div id="calcDynamicUI"></div>`;
+      renderCalculatorUI(calc.type, body.querySelector("#calcDynamicUI"));
+      document.getElementById("calcModal").classList.remove("hidden");
+      document.getElementById("calcModal").style.display = "flex";
+    }
+
+    function renderGrid() {
+      let filtered = CALCULATORS.filter(c => (activeCategory === "All" || c.cat === activeCategory) && c.name.toLowerCase().includes(searchTerm.toLowerCase()));
+      if(filtered.length === 0) document.getElementById("noResults").classList.remove("hidden");
+      else document.getElementById("noResults").classList.add("hidden");
+      document.getElementById("calculatorGrid").innerHTML = filtered.map(c => `<div class="calculator-card glass-card rounded-xl p-3" onclick="openCalculator(${JSON.stringify(c).replace(/"/g, '&quot;')})">
+        <div class="flex justify-between items-start"><i class="${c.icon} text-2xl text-indigo-500"></i><i class="fas ${isFavorite(c.id) ? 'fa-star text-yellow-500' : 'fa-star-o'} text-sm cursor-pointer" onclick="toggleFavorite(${c.id}, event)"></i></div>
+        <h3 class="font-bold text-md mt-1">${c.name}</h3><p class="text-gray-500 text-xs">${c.desc}</p>
+      </div>`).join("");
+    }
+
+    document.getElementById("globalSearch").addEventListener("input", (e) => { searchTerm = e.target.value; renderGrid(); });
+    document.getElementById("themeToggle")?.addEventListener("click", () => { darkMode = !darkMode; document.documentElement.classList.toggle("dark", darkMode); localStorage.setItem("darkMode", darkMode); });
+    window.closeModal = () => { document.getElementById("calcModal").classList.add("hidden"); document.getElementById("calcModal").style.display = "none"; };
+    window.toggleFavorite = toggleFavorite;
+    if(darkMode) document.documentElement.classList.add("dark");
+    renderGrid();
+  </script>
+</body>
+</html>
